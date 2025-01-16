@@ -1,0 +1,17 @@
+version: '3'
+services:
+  redis:
+    image: redis:latest
+    container_name: redis_container_2
+    ports:
+      - "6377:6377"
+
+  fastapi_app:
+    build: .
+    container_name: fastapi_app
+    ports:
+       - "127.0.0.1:8005:8005"
+    depends_on:
+      - redis
+    environment:
+      - REDIS_HOST=redis

@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Status Page</title>
+  <!-- Google Fonts (exemplo usando Roboto) -->
+  <link rel="preconnect" href="https://fonts.gstatic.com" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
+    rel="stylesheet"
+  />
+  <style>
+    :root {
+      /* Paleta de cores */
+      --color-bg: #0b0f19;          /* Fundo geral */
+      --color-card-bg: #1b2330;     /* Fundo de cada card */
+      --color-text: #ccc;           /* Cor padrão do texto */
+      --color-subtext: #888;        /* Texto secundário */
+      --color-primary: #4fc3f7;     /* Azul para destaques */
+      --color-success: #48c774;     /* Verde de sucesso */
+      --color-fail: #f14668;        /* Vermelho para falhas */
+      --color-shadow: rgba(0, 0, 0, 0.3);
+      --color-tooltip-bg: rgba(0, 0, 0, 0.85);
+
+      /* Tamanhos */
+      --radius-default: 8px;
+      --font-family: 'Roboto', sans-serif;
+    }
+
+    /* RESET E CONFIGURAÇÕES GERAIS */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: var(--font-family);
+      background: var(--color-bg);
+      color: var(--color-text);
+      padding: 20px;
+    }
+
+    /* HEADER COM LOGO E TÍTULO */
+    .brand {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-bottom: 1rem;
+    }
+    .brand img {
+      /* Ajuste o tamanho da logo conforme desejar */
+      width: 48px;
+      height: 48px;
+      object-fit: contain;
+    }
+    .brand h1 {
+      color: #fff;
+      font-weight: 500;
+      font-size: 1.6rem;
+    }
+
+    /* CAIXA DE STATUS GERAL */
+    .status-header {
+      background: var(--color-card-bg);
+      border-radius: var(--radius-default);
+      padding: 20px;
+      margin-bottom: 30px;
+      text-align: center;
+      box-shadow: 0 4px 10px var(--color-shadow);
+      transition: transform 0.2s ease;
+    }
+    .status-header:hover {
+      transform: scale(1.01);
+    }
+    .status-header h2 {
+      font-size: 1.6rem;
+      color: var(--color-primary);
+      margin-bottom: 10px;
+      font-weight: 500;
+    }
+    .status-header .status-dot {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+    .status-header .dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+    }
+    .dot.success {
+      background: var(--color-success);
+    }
+    .dot.fail {
+      background: var(--color-fail);
+    }
+
+    /* TOOLTIP (GENÉRICO) */
+    .tooltip {
+      position: relative;
+      display: inline-block;
+    }
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+      opacity: 1;
+    }
+    .tooltiptext {
+      visibility: hidden;
+      width: 220px;
+      background: var(--color-tooltip-bg);
+      color: #fff;
+      text-align: center;
+      border-radius: 5px;
+      padding: 8px;
+      position: absolute;
+      z-index: 10;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      font-size: 0.85rem;
+      line-height: 1.3;
+    }
+    .tooltiptext::after {
+      content: "";
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 6px;
+      border-style: solid;
+      border-color: var(--color-tooltip-bg) transparent transparent transparent;
+    }
+
+    /* SEÇÃO DE SERVIÇOS */
+    .services {
+      max-width: 1000px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .service {
+      background: var(--color-card-bg);
+      border-radius: var(--radius-default);
+      padding: 20px;
+      box-shadow: 0 4px 10px var(--color-shadow);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: transform 0.2s ease;
+    }
+    .service:hover {
+      transform: scale(1.01);
+    }
+    .service-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .service-title a {
+      font-size: 1.1rem;
+      color: var(--color-primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .service-title a:hover {
+      text-decoration: underline;
+    }
+    .service-title .status-dot {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 1rem;
+    }
+    .service-title .dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+    }
+    .dot.success {
+      background: var(--color-success);
+    }
+    .dot.fail {
+      background: var(--color-fail);
+    }
+
+    /* BARRAS DE UPTIME */
+    .uptime-bar {
+      display: flex;
+      gap: 4px;
+      margin-top: 10px;
+      align-items: center;
+      overflow: visible; /* Deixar as tooltips visíveis */
+    }
+    .uptime-segment {
+      position: relative;
+      width: 8px;
+      height: 16px;
+      background-color: #555;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: transform 0.2s ease;
+    }
+    .uptime-segment:hover {
+      transform: translateY(-2px);
+    }
+    .uptime-segment.success {
+      background-color: var(--color-success);
+    }
+    .uptime-segment.fail {
+      background-color: var(--color-fail);
+    }
+    .uptime-segment:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      top: -38px; /* um pouco mais para cima */
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--color-tooltip-bg);
+      color: #fff;
+      padding: 6px 8px;
+      font-size: 0.8rem;
+      border-radius: 4px;
+      white-space: nowrap;
+      z-index: 10;
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.5);
+      visibility: visible;
+      opacity: 1;
+      pointer-events: none;
+    }
+
+    .last-checked {
+      font-size: 0.9rem;
+      color: var(--color-subtext);
+      text-align: right;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <!-- STATUS GERAL -->
+  <div class="status-header" id="statusHeader">
+    <h2>Loading status...</h2>
+    <div class="status-dot">
+      <div class="dot"></div>
+    </div>
+  </div>
+
+  <!-- SERVIÇOS -->
+  <div class="services" id="services"></div>
+
+  <script>
+    const STATUS_URL = "/api/status";
+    const HISTORY_URL = "/api/history?count=100"; // Número de registros para as barras de uptime
+
+    async function generateServices() {
+      const statusHeader = document.getElementById("statusHeader");
+      const servicesContainer = document.getElementById("services");
+
+      try {
+        // Faz requisições em paralelo
+        const [statusResponse, historyResponse] = await Promise.all([
+          fetch(STATUS_URL),
+          fetch(HISTORY_URL),
+        ]);
+
+        const statusData = await statusResponse.json();
+        const historyData = await historyResponse.json();
+
+        // Conta quantos serviços estão operacionais
+        const totalServices = statusData.data.length;
+        const operationalServices = statusData.data.filter(
+          (service) => service.status_code >= 200 && service.status_code < 300
+        ).length;
+
+        // Determina a mensagem de status geral
+        let statusMessage = "";
+        if (operationalServices === totalServices) {
+          statusMessage = "All systems operational";
+        } else if (operationalServices === 0) {
+          statusMessage = "All systems down";
+        } else {
+          statusMessage = "Some systems down";
+        }
+
+        // Atualiza o cabeçalho
+        statusHeader.querySelector("h2").textContent = statusMessage;
+
+        const statusDot = statusHeader.querySelector(".dot");
+        // Define o ponto do cabeçalho como "success" se todos OK, ou "fail" caso contrário
+        if (operationalServices === totalServices) {
+          statusDot.className = "dot success";
+        } else {
+          statusDot.className = "dot fail";
+        }
+
+        // Limpa o container de serviços
+        servicesContainer.innerHTML = "";
+
+        // Gera um card para cada serviço
+        statusData.data.forEach((service) => {
+          const { name, status_code, response_time_ms, timestamp } = service;
+
+          const serviceDiv = document.createElement("div");
+          serviceDiv.classList.add("service");
+
+          const serviceTitle = document.createElement("div");
+          serviceTitle.classList.add("service-title");
+
+          // Link com o nome do serviço
+          const serviceLink = document.createElement("a");
+          serviceLink.href = "#";
+          serviceLink.textContent = name;
+
+          // Status geral com tooltip
+          const statusDot = document.createElement("div");
+          statusDot.classList.add("status-dot", "tooltip");
+
+          const dot = document.createElement("div");
+          dot.className = `dot ${
+            status_code >= 200 && status_code < 300 ? "success" : "fail"
+          }`;
+
+          const tooltip = document.createElement("div");
+          tooltip.className = "tooltiptext";
+          tooltip.textContent = `Status: ${
+            status_code ?? "N/A"
+          } | Resposta: ${response_time_ms ?? "N/A"}ms | Última Checagem: ${
+            timestamp ? new Date(timestamp * 1000).toLocaleString() : "N/A"
+          }`;
+
+          statusDot.append(dot, tooltip);
+          serviceTitle.append(serviceLink, statusDot);
+
+          // Barrinha de uptime
+          const uptimeBar = document.createElement("div");
+          uptimeBar.classList.add("uptime-bar");
+
+          // Verifica se há histórico para este serviço
+          if (historyData.data && historyData.data[name]) {
+            historyData.data[name].forEach((historyItem) => {
+              const segment = document.createElement("div");
+              segment.className = `uptime-segment ${
+                historyItem.status_code >= 200 && historyItem.status_code < 300
+                  ? "success"
+                  : "fail"
+              }`;
+
+              segment.setAttribute(
+                "data-tooltip",
+                `${new Date(historyItem.timestamp * 1000).toLocaleString()} | Status: ${
+                  historyItem.status_code
+                } | Resposta: ${historyItem.response_time_ms ?? "N/A"}ms`
+              );
+
+              uptimeBar.appendChild(segment);
+            });
+          }
+
+          // Última checagem
+          const lastChecked = document.createElement("div");
+          lastChecked.className = "last-checked";
+          lastChecked.textContent = timestamp
+            ? `Última checagem: ${new Date(timestamp * 1000).toLocaleString()}`
+            : "Sem dados recentes";
+
+          // Monta o serviço
+          serviceDiv.append(serviceTitle, uptimeBar, lastChecked);
+          servicesContainer.appendChild(serviceDiv);
+        });
+      } catch (error) {
+        // Em caso de erro na requisição
+        statusHeader.querySelector("h2").textContent = "Erro ao carregar status";
+        const statusDot = statusHeader.querySelector(".dot");
+        statusDot.className = "dot fail";
+        console.error("Erro ao buscar dados:", error);
+      }
+    }
+
+    // Atualiza os serviços ao carregar a página...
+    generateServices();
+    // ...e a cada 10 segundos
+    setInterval(generateServices, 10000);
+  </script>
+</body>
+</html>
