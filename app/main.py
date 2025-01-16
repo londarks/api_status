@@ -2,7 +2,7 @@ import time
 import threading
 import requests
 import redis
-import json  # ADICIONE
+import json
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
@@ -12,7 +12,7 @@ from fastapi.templating import Jinja2Templates
 # -------------------------------------------------------------------------------
 
 CHECK_INTERVAL = 30 # 30 segundos acada checagem
-MAX_RECORDS = 720 * 4  # 4 horas (5s cada checagem)
+MAX_RECORDS = 720 * 4  # 4 horas (30s cada checagem)
 APIS_TO_MONITOR = [
     {"name": "API - 1", "url": "https://host.com/api/v1/heartbeat/"},
     {"name": "API - 2", "url": "https://host.com/api/v1/heartbeat/"},
